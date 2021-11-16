@@ -20,15 +20,6 @@ char *destFileName(char *fileName) {
   return oFileName;
 }
 
-// Operates XOR
-void xorOperation(char *destBuffer, char *srcBuffer, int size, int key) {
-  int i;
-  for (i = 0; i < size; i++) {
-    destBuffer[i] = srcBuffer[i] ^ key;
-    // printf("%d : %d %d\n", i, srcBuffer[i], destBuffer[i]);
-  }
-}
-
 int main(int argc, char **argv) {
   int processId;
   int numOfProcesses;
@@ -68,7 +59,9 @@ int main(int argc, char **argv) {
 
   MPI_Scatter(buffer, localMaxArraySize, MPI_CHAR, &localBuffer, localMaxArraySize, MPI_CHAR, 0, MPI_COMM_WORLD);
   printf("[Process %d] Starting Encryption/Decryption with Xor Operation\n", processId);
-  xorOperation(operatedBuffer, buffer, localMaxArraySize, key);
+  for (i = 0; i < size; i++) {
+    localBuffer[i] = localBuffer[i] ^ key;
+  }
   printf("[Process %d] Finishing Encryption/Decryption with Xor Operation\n", processId);
   MPI_Gather(&localBuffer, localMaxArraySize, MPI_CHAR, operatedBuffer, localMaxArraySize, MPI_CHAR, 0, MPI_COMM_WORLD);
 
